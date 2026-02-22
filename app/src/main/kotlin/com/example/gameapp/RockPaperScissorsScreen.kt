@@ -1,11 +1,5 @@
 package com.example.gameapp
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,10 +49,20 @@ fun RockPaperScissorsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Piedra, Papel o Tijera", color = Color.White, fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        "Piedra, Papel o Tijera",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar", tint = Color.White)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Regresar",
+                            tint = Color.White
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B263B))
@@ -75,7 +79,10 @@ fun RockPaperScissorsScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Result Display or Loading
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
                 when {
                     isLoading -> CircularProgressIndicator(
                         color = Color(0xFFE0FBFC),
@@ -86,13 +93,12 @@ fun RockPaperScissorsScreen(
                         color = Color.Red,
                         fontSize = 18.sp
                     )
-                    else -> AnimatedVisibility(
-                        visible = gameResult != null,
-                        enter = fadeIn(animationSpec = tween(500)) + scaleIn(animationSpec = tween(500)),
-                        exit = fadeOut(animationSpec = tween(500))
-                    ) {
-                        gameResult?.let { ResultCard(it) }
-                    }
+                    gameResult != null -> ResultCard(gameResult!!)
+                    else -> Text(
+                        text = "Elige tu jugada para comenzar",
+                        color = Color(0xFF98C1D9),
+                        fontSize = 16.sp
+                    )
                 }
             }
 
@@ -109,9 +115,24 @@ fun RockPaperScissorsScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    GameButton(emoji = "🗿", onClick = { viewModel.playGame("ROCK") }, enabled = !isLoading)
-                    GameButton(emoji = "📄", onClick = { viewModel.playGame("PAPER") }, enabled = !isLoading)
-                    GameButton(emoji = "✂️", onClick = { viewModel.playGame("SCISSORS") }, enabled = !isLoading)
+                    GameButton(
+                        emoji = "\uD83D\uDDFF",
+                        label = "Piedra",
+                        onClick = { viewModel.playGame("ROCK") },
+                        enabled = !isLoading
+                    )
+                    GameButton(
+                        emoji = "\uD83D\uDCC4",
+                        label = "Papel",
+                        onClick = { viewModel.playGame("PAPER") },
+                        enabled = !isLoading
+                    )
+                    GameButton(
+                        emoji = "\u2702\uFE0F",
+                        label = "Tijera",
+                        onClick = { viewModel.playGame("SCISSORS") },
+                        enabled = !isLoading
+                    )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 if (gameResult != null) {
@@ -129,28 +150,32 @@ fun RockPaperScissorsScreen(
 }
 
 @Composable
-fun GameButton(emoji: String, onClick: () -> Unit, enabled: Boolean) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        shape = CircleShape,
-        modifier = Modifier.size(90.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF98C1D9),
-            disabledContainerColor = Color(0xFF5A6A7A)
-        ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
-    ) {
-        Text(text = emoji, fontSize = 40.sp)
+fun GameButton(emoji: String, label: String, onClick: () -> Unit, enabled: Boolean) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Button(
+            onClick = onClick,
+            enabled = enabled,
+            shape = CircleShape,
+            modifier = Modifier.size(80.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF98C1D9),
+                disabledContainerColor = Color(0xFF5A6A7A)
+            ),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+        ) {
+            Text(text = emoji, fontSize = 30.sp)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = label, color = Color.White, fontSize = 12.sp)
     }
 }
 
 @Composable
 fun ResultCard(result: GameResult) {
     val resultText = when (result.result) {
-        "WIN" -> "¡Ganaste!"
-        "LOSE" -> "¡Perdiste!"
-        else -> "¡Empate!"
+        "WIN" -> "Ganaste!"
+        "LOSE" -> "Perdiste!"
+        else -> "Empate!"
     }
     val resultColor = when (result.result) {
         "WIN" -> Color(0xFF57CC99)
@@ -189,16 +214,17 @@ fun ResultCard(result: GameResult) {
 @Composable
 fun PlayerChoice(emoji: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = emoji, fontSize = 60.sp)
-        Text(text = label, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        Text(text = emoji, fontSize = 50.sp)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = label, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
 fun getEmojiForMove(move: String): String {
     return when (move.uppercase()) {
-        "ROCK" -> "🗿"
-        "PAPER" -> "📄"
-        "SCISSORS" -> "✂️"
-        else -> "❓"
+        "ROCK" -> "\uD83D\uDDFF"
+        "PAPER" -> "\uD83D\uDCC4"
+        "SCISSORS" -> "\u2702\uFE0F"
+        else -> "?"
     }
 }
