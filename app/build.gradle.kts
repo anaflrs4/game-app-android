@@ -49,6 +49,16 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("androidx.navigation:navigation-compose:2.7.5")
+        force("androidx.navigation:navigation-runtime-ktx:2.7.5")
+        force("androidx.navigation:navigation-common-ktx:2.7.5")
+        force("androidx.navigation:navigation-common:2.7.5")
+        force("androidx.navigation:navigation-runtime:2.7.5")
+    }
+}
+
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
     implementation(composeBom)
