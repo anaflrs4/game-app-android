@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Game App</string>
+    <string name="lottery">Lottery</string>
+    <string name="guess_number">Guess the Number</string>
+    <string name="rock_paper_scissors">Rock Paper Scissors</string>
+    <string name="play">Play</string>
+    <string name="result">Result</string>
+    <string name="win">You Win!</string>
+    <string name="lose">You Lose!</string>
+    <string name="draw">Draw!</string>
+    <string name="rock">Rock</string>
+    <string name="paper">Paper</string>
+    <string name="scissors">Scissors</string>
+    <string name="server_choice">Server chose: %s</string>
+    <string name="your_choice">You chose: %s</string>
+</resources>
