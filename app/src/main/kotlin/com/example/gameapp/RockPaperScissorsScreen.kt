@@ -17,12 +17,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,42 +42,51 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RockPaperScissorsScreen(viewModel: RockPaperScissorsViewModel = viewModel()) {
+fun RockPaperScissorsScreen(
+    onBack: () -> Unit,
+    viewModel: RockPaperScissorsViewModel = viewModel()
+) {
     val gameResult by viewModel.gameResult.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF0D1B2A)), // Dark Navy Blue
-        contentAlignment = Alignment.Center
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Piedra, Papel o Tijera", color = Color.White, fontWeight = FontWeight.Bold) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar", tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B263B))
+            )
+        },
+        containerColor = Color(0xFF0D1B2A)
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Title
-            Text(
-                text = "Piedra, Papel o Tijera",
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                modifier = Modifier.padding(top = 32.dp)
-            )
-
             // Result Display or Loading
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                if (isLoading) {
-                    CircularProgressIndicator(color = Color(0xFFE0FBFC), modifier = Modifier.size(64.dp))
-                } else if (errorMessage != null) {
-                    Text(text = errorMessage!!, color = Color.Red, fontSize = 18.sp)
-                } else {
-                    AnimatedVisibility(
+                when {
+                    isLoading -> CircularProgressIndicator(
+                        color = Color(0xFFE0FBFC),
+                        modifier = Modifier.size(64.dp)
+                    )
+                    errorMessage != null -> Text(
+                        text = errorMessage!!,
+                        color = Color.Red,
+                        fontSize = 18.sp
+                    )
+                    else -> AnimatedVisibility(
                         visible = gameResult != null,
                         enter = fadeIn(animationSpec = tween(500)) + scaleIn(animationSpec = tween(500)),
                         exit = fadeOut(animationSpec = tween(500))
@@ -143,7 +160,6 @@ fun ResultCard(result: GameResult) {
 
     Card(
         modifier = Modifier.fillMaxWidth(0.9f),
-        shape = CardDefaults.shape,
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1B263B)),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
@@ -159,7 +175,10 @@ fun ResultCard(result: GameResult) {
                 fontWeight = FontWeight.ExtraBold
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 PlayerChoice(emoji = getEmojiForMove(result.playerMove), label = "Tu Jugada")
                 PlayerChoice(emoji = getEmojiForMove(result.serverMove), label = "Servidor")
             }
