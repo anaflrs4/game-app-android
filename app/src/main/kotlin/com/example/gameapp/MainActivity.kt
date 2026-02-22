@@ -6,10 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,17 +21,24 @@ class MainActivity : ComponentActivity() {
             GameAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color(0xFF0D1B2A)
                 ) {
-                    val currentScreen = remember { mutableStateOf("home") }
-
-                    when (currentScreen.value) {
-                        "home" -> HomeScreen { game ->
-                            currentScreen.value = game
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "home") {
+                        composable("home") {
+                            HomeScreen { gameId ->
+                                navController.navigate(gameId)
+                            }
                         }
-                        "rps" -> RockPaperScissorsScreen(viewModel())
-                        else -> HomeScreen { game ->
-                            currentScreen.value = game
+                        composable("rps") {
+                            RockPaperScissorsScreen(viewModel())
+                        }
+                        // Puedes agregar los otros juegos aquí cuando los implementes
+                        composable("lottery") {
+                            // LotteryScreen()
+                        }
+                        composable("guess") {
+                            // GuessNumberScreen()
                         }
                     }
                 }
