@@ -19,7 +19,7 @@ class RockPaperScissorsViewModel : ViewModel() {
     val errorMessage: StateFlow<String?> = _errorMessage
 
     private val apiService: GameApiService = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:8080/") // For Android emulator
+        .baseUrl("https://game-app-backend-d88t.onrender.com/") // Production URL
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(GameApiService::class.java)

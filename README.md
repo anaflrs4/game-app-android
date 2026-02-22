@@ -102,7 +102,7 @@ http://10.0.2.2:8080
 
 **Producción:**
 ```
-https://game-app-backend.onrender.com
+https://game-app-backend-d88t.onrender.com
 ```
 
 ### Ejemplo de solicitud
